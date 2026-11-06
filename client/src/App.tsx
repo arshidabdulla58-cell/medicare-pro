@@ -5,6 +5,7 @@ import { LoadingState } from './components/common/QueryState';
 import { AuthSessionBootstrap } from './components/auth/AuthSessionBootstrap';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from './features/auth/auth-store';
+import { BackendStatus } from './components/common/BackendStatus';
 
 const HomePage = lazy(() => import('./pages/public/HomePage').then((module) => ({ default: module.HomePage })));
 const AboutPage = lazy(() => import('./pages/public/AboutPage').then((module) => ({ default: module.AboutPage })));
@@ -24,6 +25,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthSessionBootstrap />
+      <BackendStatus />
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="login" element={<Suspense fallback={<LoadingState label="Loading sign in" />}><LoginPage /></Suspense>} />

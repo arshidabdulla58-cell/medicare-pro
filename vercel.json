@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm ci --include=dev",
+  "buildCommand": "npm run build --workspace client",
+  "outputDirectory": "client/dist",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://medicare-pro-1ivc.onrender.com/api/:path*" },
+    { "source": "/socket.io/:path*", "destination": "https://medicare-pro-1ivc.onrender.com/socket.io/:path*" },
+    { "source": "/((?!api/|socket.io/|assets/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    { "source": "/api/:path*", "headers": [{ "key": "Cache-Control", "value": "private, no-store" }] }
+  ]
+}

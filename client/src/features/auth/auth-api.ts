@@ -1,5 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore, type AuthRole, type AuthUser } from './auth-store';
+import { waitForBackend } from './backend-readiness';
 
 export const apiHttp = axios.create({ baseURL: '/api/v1', timeout: 12_000, withCredentials: true });
 type Envelope<T> = { data: T };
@@ -33,7 +34,8 @@ export const authApi = {
 
 let refreshRequest: Promise<Session> | null = null;
 
-apiHttp.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+apiHttp.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  await waitForBackend();
   const { accessToken } = useAuthStore.getState();
   if (accessToken && config.url !== '/auth/refresh') config.headers.Authorization = `Bearer ${accessToken}`;
   return config;

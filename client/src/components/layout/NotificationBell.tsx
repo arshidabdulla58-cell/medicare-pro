@@ -17,7 +17,7 @@ export function NotificationBell() {
   const mark = useMutation({ mutationFn: (id: string) => apiHttp.post(`/notifications/${id}/read`), onSuccess: () => { void cache.invalidateQueries({ queryKey: ['notifications', user?.id] }); } });
   useEffect(() => {
     if (!accessToken || !user) return;
-    const socket = io({ auth: { token: accessToken } });
+    const socket = io({ auth: { token: accessToken }, transports: ['polling'], upgrade: false });
     const refresh = () => { void cache.invalidateQueries({ queryKey: ['notifications', user.id] }); void cache.invalidateQueries({ queryKey: ['appointments'] }); };
     socket.on('connect', refresh);
     socket.on('notification.created', refresh);

@@ -1,5 +1,15 @@
 # Portfolio deployment: Render and MongoDB Atlas
 
+## Free frontend hosting without the Render wake-up page
+
+Import `arshidabdulla58-cell/medicare-pro` into a Vercel Hobby project. Keep Root Directory at the repository root (not `client`). The root `vercel.json` installs build dependencies, builds only the client, serves `client/dist`, and proxies API and Socket.IO polling requests to the existing Render service. Never add MongoDB credentials or JWT secrets to Vercel's frontend environment.
+
+After Vercel assigns its stable production URL, set Render's `CLIENT_ORIGIN` to that exact HTTPS origin without a trailing slash and redeploy the backend. Keep `COOKIE_SAME_SITE=lax`; the browser accesses API cookies through the same-origin proxy. Do not allow wildcard preview origins. Use the Vercel production URL as the demo link; the old Render URL will still show Render's wake-up screen when idle.
+
+The client checks readiness before authenticated API requests and retries only that read-only check for up to approximately 90 seconds. Public pages render immediately with a connection notice. Mutations are not automatically replayed. The free backend can still sleep and data-dependent operations can still be delayed. Socket.IO uses HTTP polling through the proxy, with the persisted inbox providing recovery.
+
+Verify the production home page and direct `/login` reload, registration/login/refresh/logout, and patient notifications after changing CLIENT_ORIGIN. The hosting migration is not complete until the Vercel project is deployed and these live checks pass.
+
 This deployment serves the compiled React website, Express API and Socket.IO from one Render web service. MongoDB Atlas provides the replica set required for appointment transactions. No local database files are uploaded. Use synthetic patient data only.
 
 ## 1. Create accounts and repository
